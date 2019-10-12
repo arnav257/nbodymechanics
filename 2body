@@ -1,0 +1,61 @@
+import numpy as np
+import math as m
+import matplotlib
+from matplotlib import pylab
+
+G = 6.67408e-11
+x_1_list = []
+y_1_list = []
+x_2_list = []
+y_2_list = []
+
+M_1 = 1.989e30
+x_1 = 0.0  # @param
+y_1 = 0.0  # @param
+vx_1 = 0.0  # @param
+vy_1 = 0.0  # @param
+
+M_2 = 5.972e24
+x_2 = 1.47e11  # @param
+y_2 = 0.0  # @param
+vx_2 = 0.0  # @param
+vy_2 = -30300.0  # @param
+
+tspan = 5000000000
+t = 0
+dt = 1
+
+while t < tspan:
+    r_x = x_1 - x_2
+    r_y = y_1 - y_2
+    r = m.sqrt(r_x * r_x + r_y * r_y)
+
+    Fx_1 = -G * M_1 * M_2 * r_x / (r * r * r)
+    Fy_1 = -G * M_1 * M_2 * r_y / (r * r * r)
+    vx_1 += Fx_1 * dt / M_1
+    vy_1 += Fy_1 * dt / M_1
+    x_1 += vx_1 * dt
+    y_1 += vy_1 * dt
+
+    Fx_2 = G * M_1 * M_2 * r_x / (r * r * r)
+    Fy_2 = G * M_1 * M_2 * r_y / (r * r * r)
+    vx_2 += Fx_2 * dt / M_2
+    vy_2 += Fy_2 * dt / M_2
+    x_2 += vx_2 * dt
+    y_2 += vy_2 * dt
+
+    t += dt
+
+    x_1_list.append(x_1)
+    y_1_list.append(y_1)
+
+    x_2_list.append(x_2)
+    y_2_list.append(y_2)
+
+pylab.plot(x_1_list, y_1_list, "-b")
+pylab.plot(x_2_list, y_2_list, "-r")
+pylab.xlabel("X")
+pylab.ylabel("Y")
+
+pylab.axis("equal")
+pylab.show()
