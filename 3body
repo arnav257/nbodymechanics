@@ -1,0 +1,98 @@
+import numpy as np
+from numpy import array as arr
+import math as m
+import matplotlib
+from matplotlib import pylab
+
+G = 6.67408e-11
+i=0;j=1;k=2;
+
+M_1 = 1.989e30 #Sun mass
+x_1 = 0.0 #@param
+y_1 = 0.0 #@param
+r1 = arr([x_1, y_1])
+vx_1 = 0.0 #@param
+vy_1 = 0.0 #@param
+v1 = arr([vx_1, vy_1])
+
+M_2 = 5.972e24 #Earth mass
+x_2 = 1.47e11 #@param
+y_2 = 0.0 #@param
+r2 = arr([x_2, y_2])
+vx_2 = -20000.0 #@param
+vy_2 = 30300.0 #@param
+v2 = arr([vx_2, vy_2])
+
+M_3 = 5.972e24 #Earth mass
+x_3 = 1.47e10 #@param
+y_3 = 0.0 #@param
+r3 = arr([x_3, y_3])
+vx_3 = -20000.0 #@param
+vy_3 = 10300.0 #@param
+v3 = arr([vx_2, vy_2])
+
+tspan = 5000000
+t = 0
+dt = 10 #Update parameters every 'dt' second(s)
+
+r1_x_list, r1_y_list = [r1[i]],[r1[j]]
+r1_list = [r1_x_list,r1_y_list]
+r2_x_list, r2_y_list = [r2[i]],[r2[j]]
+r2_list = [r2_x_list,r2_y_list]
+r3_x_list, r3_y_list = [r3[i]],[r3[j]]
+r3_list = [r3_x_list,r3_y_list]
+
+F12 = arr([0.0,0.0])
+F21 = arr([0.0,0.0])
+F13 = arr([0.0,0.0])
+F31 = arr([0.0,0.0])
+F23 = arr([0.0,0.0])
+F32 = arr([0.0,0.0])
+
+while t<tspan:
+    
+    r12 = r1 - r2
+    modr12 = m.sqrt(r12[i]**2 + r12[j]**2)
+    
+    r13 = r1 - r3
+    modr13 = m.sqrt(r13[i]**2 + r13[j]**2)
+    
+    r23 = r2 - r3
+    modr23 = m.sqrt(r23[i]**2 + r23[j]**2)
+
+    F12 = -(G*M_1*M_2)*r12/(modr12**3)
+    F13 = -(G*M_1*M_3)*r13/(modr13**3)
+    F23 = -(G*M_2*M_3)*r23/(modr23**3)
+    
+    F21 = -F12
+    F31 = -F13
+    F32 = -F23
+    
+    v1 += (F12+F13)*dt/M_1
+    v2 += (F21+F23)*dt/M_2
+    v3 += (F31+F32)*dt/M_3
+    
+    r1 += v1*dt
+    r2 += v2*dt
+    r3 += v3*dt
+    
+    t += dt
+    
+    r1_x_list.append(r1[i])
+    r1_y_list.append(r1[j])
+    
+    r2_x_list.append(r2[i])
+    r2_y_list.append(r2[j])
+    
+    r3_x_list.append(r3[i])
+    r3_y_list.append(r3[j])
+    
+pylab.plot(r1_list[i], r1_list[j], "-b", linewidth = 1.2, label = "Star")
+pylab.plot(r2_list[i], r2_list[j], "-r", linewidth = 0.9, label = "Planet")
+pylab.plot(r3_list[i], r3_list[j], "-y", linewidth = 0.7, label = "Asteroid")
+pylab.xlabel("X")
+pylab.ylabel("Y")
+pylab.legend(loc='upper right')
+
+pylab.axis("equal")
+pylab.show()
